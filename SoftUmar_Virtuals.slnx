@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="SoftUmar_Virtuals.Application/SoftUmar_Virtuals.Application.csproj" />
+    <Project Path="SoftUmar_Virtuals.Domain/SoftUmar_Virtuals.Domain.csproj" />
+    <Project Path="SoftUmar_Virtuals.Infrastructure/SoftUmar_Virtuals.Infrastructure.csproj" />
+    <Project Path="SoftUmar_Virtuals/SoftUmar_Virtuals.Api.csproj" />
+  </Folder>
+</Solution>
