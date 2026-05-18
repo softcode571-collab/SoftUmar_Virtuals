@@ -1,7 +1,5 @@
-using Hangfire;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Serilog;
 using SoftUmar_Virtuals.API.Middleware;
 using SoftUmar_Virtuals.Infrastructure.DependencyInjection;
@@ -10,6 +8,7 @@ using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SoftUmar_Virtuals.Application.DependencyInjection;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -208,8 +207,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    //app.MapOpenApi();
     app.UseSwagger();
-
     app.UseSwaggerUI();
 }
 
