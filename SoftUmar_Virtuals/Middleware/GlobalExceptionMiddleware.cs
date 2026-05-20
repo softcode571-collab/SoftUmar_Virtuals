@@ -1,4 +1,8 @@
-﻿namespace SoftUmar_Virtuals.API.Middleware
+﻿using FluentValidation;
+using System.Net;
+using System.Text.Json;
+
+namespace SoftUmar_Virtuals.API.Middleware
 {
     public class GlobalExceptionMiddleware
     {
@@ -15,15 +19,33 @@
             {
                 await _next(context);
             }
+            catch (ValidationException ex)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                context.Response.ContentType = "application/json";
+
+                var response = new
+                {
+                    success = false,
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage)
+                };
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            }
             catch (Exception ex)
             {
-                context.Response.StatusCode = 500;
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.ContentType = "application/json";
 
-                await context.Response.WriteAsJsonAsync(new
+                var response = new
                 {
-                    Success = false,
-                    Message = ex.Message
-                });
+                    success = false,
+                    message = "An unexpected error occurred",
+                    detail = ex.Message
+                };
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
         }
     }

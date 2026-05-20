@@ -16,13 +16,11 @@
     <Folder Include="BackgroundJobs\" />
     <Folder Include="Notifications\" />
     <Folder Include="Persistence\Configurations\" />
+    <Folder Include="Persistence\Context\" />
     <Folder Include="Providers\FiveSim\" />
     <Folder Include="Providers\Notifications\" />
-    <Folder Include="Providers\Persistence\Configurations\" />
-    <Folder Include="Providers\Persistence\Context\" />
     <Folder Include="Providers\SmsPool\" />
     <Folder Include="Redis\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 	
 	
@@ -41,7 +39,15 @@
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.23" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.23" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.16">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.16">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="10.0.8" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.18.0" />

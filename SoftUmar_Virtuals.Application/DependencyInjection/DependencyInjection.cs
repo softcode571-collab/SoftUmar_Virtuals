@@ -1,6 +1,9 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using SoftUmar_Virtuals.Application.Behaviors;
+using SoftUmar_Virtuals.Application.Features.Auth.RegisterUser.Command;
+using SoftUmar_Virtuals.Application.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -15,7 +18,17 @@ namespace SoftUmar_Virtuals.Application.DependencyInjection
         {
             services.AddMediatR(typeof(DependencyInjection).Assembly);
 
+           
+
             services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+
+           
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehaviour<,>));
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+
 
             return services;
 

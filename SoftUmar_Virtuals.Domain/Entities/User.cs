@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace SoftUmar_Virtuals.Domain.Entities
 {
-    public class User
+    public class User : BaseEntity
     {
-        public Guid Id { get; set; }
 
         public required string FirstName { get; set; }
 
@@ -34,6 +33,6 @@ namespace SoftUmar_Virtuals.Domain.Entities
 
         public DateTime? LockoutEnd { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        
     }
 }

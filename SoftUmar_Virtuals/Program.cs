@@ -17,6 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 // DEPENDENCY INJECTION
 // =========================
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddApplication();
@@ -229,7 +231,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-//app.MapControllers();
+app.MapControllers();
 
 
 // =========================
