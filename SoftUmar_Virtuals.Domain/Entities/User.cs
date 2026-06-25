@@ -13,6 +13,8 @@ namespace SoftUmar_Virtuals.Domain.Entities
 
         public required string  LastName { get; set; }
 
+        public string? MiddleName { get; set; }
+
         public required string  Email { get; set; }
 
         public required string PasswordHash { get; set; }
@@ -33,6 +35,6 @@ namespace SoftUmar_Virtuals.Domain.Entities
 
         public DateTime? LockoutEnd { get; set; }
 
-        
+        public Wallets Wallet { get; set; }
     }
 }

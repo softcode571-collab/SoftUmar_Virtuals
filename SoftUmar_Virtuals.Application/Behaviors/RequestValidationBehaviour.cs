@@ -1,11 +1,4 @@
-﻿using FluentResults;
-using FluentValidation;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
 
 namespace SoftUmar_Virtuals.Application.Behaviors
 {

@@ -36,7 +36,10 @@ namespace SoftUmar_Virtuals.Infrastructure.DependencyInjection
 
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IRepository<User>, Repository<User>>();
-
+            services.AddScoped<IRepository<Login>, Repository<Login>>();
+            
+            services.AddScoped<IRepository<Wallets>, Repository<Wallets>>();
+            services.AddScoped<IRepository<AuditLogs>, Repository<AuditLogs>>();
             services.AddScoped<ILoggerService, LoggerService>();
             services.AddScoped<ISlackLogger, SlackLogger>();
 

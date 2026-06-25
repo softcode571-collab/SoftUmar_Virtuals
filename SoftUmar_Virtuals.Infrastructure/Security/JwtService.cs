@@ -21,7 +21,7 @@ namespace SoftUmar_Virtuals.Infrastructure.Security
             _settings = settings.Value;
         }
 
-        public string GenerateAccessToken(User user)
+        public async Task<string> GenerateAccessToken(User user)
         {
             var claims = new[]
             {
@@ -60,5 +60,7 @@ namespace SoftUmar_Virtuals.Infrastructure.Security
             return Convert.ToBase64String(
                 RandomNumberGenerator.GetBytes(64));
         }
+
+        
     }
 }

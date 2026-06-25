@@ -9,7 +9,7 @@ namespace SoftUmar_Virtuals.Application.Interfaces
     public interface ILoggerService
     {
         //Task Log(string request, string response, string methodName, bool success = false);
-
+        Task LogToDatabase(string level, string message, string methodName, string? traceId = null, string? userId = null, string? data = null, CancellationToken cancellationToken = default);
         Task LogInfo(string message, string methodName, string? traceId = null);
         Task LogWarning(string message, string methodName, string? traceId = null);
         Task LogError(string message, string methodName, Exception? ex = null, string? traceId = null);
