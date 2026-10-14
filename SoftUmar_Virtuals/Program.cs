@@ -1,14 +1,20 @@
+using Hangfire;
+using Hangfire.SqlServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Serilog;
 using SoftUmar_Virtuals.API.Middleware;
+using SoftUmar_Virtuals.Application.DependencyInjection;
+using SoftUmar_Virtuals.Application.Interfaces;
 using SoftUmar_Virtuals.Infrastructure.DependencyInjection;
 using SoftUmar_Virtuals.Infrastructure.Security;
+using SoftUmar_Virtuals.Infrastructure.Services;
+using SoftUmar_Virtuals.Infrastructure.Services.FiveSim;
+using SoftUmar_Virtuals.Infrastructure.Services.Monnify;
 using System.Text;
 using System.Threading.RateLimiting;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using SoftUmar_Virtuals.Application.DependencyInjection;
-using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +34,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSignalR();
+
+
 
 
 // =========================
@@ -156,20 +164,22 @@ builder.Services.AddHealthChecks()
 // HANGFIRE
 // =========================
 
-//builder.Services.AddHangfire(config =>
-//{
-//    config.SetDataCompatibilityLevel(
-//        CompatibilityLevel.Version_180);
+builder.Services.AddHangfire(config =>
+{
+    config.SetDataCompatibilityLevel(
+        CompatibilityLevel.Version_180);
 
-//    config.UseSimpleAssemblyNameTypeSerializer();
+    config.UseSimpleAssemblyNameTypeSerializer();
 
-//    config.UseRecommendedSerializerSettings();
+    config.UseRecommendedSerializerSettings();
 
-//    config.UseSqlServerStorage(
-//        builder.Configuration.GetConnectionString("VirtualNumber"));
-//});
+    config.UseSqlServerStorage(
+        builder.Configuration.GetConnectionString("VirtualNumber"));
+});
 
-//builder.Services.AddHangfireServer();
+// NEW: was missing even when this block was uncommented — without this,
+// enqueued jobs sit in storage and nothing ever picks them up.
+builder.Services.AddHangfireServer();
 
 
 // =========================
@@ -194,6 +204,14 @@ builder.Services.AddSwaggerGen(options =>
             In = ParameterLocation.Header,
             Description = "Enter: Bearer {your token}"
         });
+});
+
+builder.Services.Configure<MonnifySettings>(builder.Configuration.GetSection("Monnify"));
+
+builder.Services.Configure<FiveSimSettings>(builder.Configuration.GetSection("FiveSim"));
+builder.Services.AddHttpClient<FiveSimClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["FiveSim:BaseUrl"]!);
 });
 
 // =========================
@@ -245,7 +263,16 @@ app.MapHealthChecks("/health");
 // HANGFIRE DASHBOARD
 // =========================
 
-//app.UseHangfireDashboard();
+// NEW: gated behind AdminOnly instead of left wide open. Must come after
+// UseAuthentication/UseAuthorization above, which it already does.
+app.MapWhen(
+    context => context.Request.Path.StartsWithSegments("/hangfire"),
+    appBuilder =>
+    {
+        appBuilder.UseAuthentication();
+        appBuilder.UseAuthorization();
+        appBuilder.UseHangfireDashboard();
+    });
 
 
 // =========================

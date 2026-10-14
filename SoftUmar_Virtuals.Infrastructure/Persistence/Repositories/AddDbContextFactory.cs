@@ -33,6 +33,12 @@ namespace VirtualNumber.Infrastructure.Persistence.Repositories
                 .HasOne(u => u.Wallet)
                 .WithOne(w => w.User)
                 .HasForeignKey<Wallets>(w => w.UserId);
+
+            // ... your existing config ...
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
         }
     }
 }

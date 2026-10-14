@@ -88,6 +88,11 @@ namespace SoftUmar_Virtuals.Infrastructure.Persistence.Repositories
             await Task.CompletedTask; // For consistency with async pattern
         }
 
+        public IQueryable<T> GetQueryable()
+        {
+            return _dbSet.AsQueryable();
+        }
+
         public async Task DeleteAsync(T entity)
         {
             _dbSet.Remove(entity);
@@ -116,6 +121,29 @@ namespace SoftUmar_Virtuals.Infrastructure.Persistence.Repositories
                 .ToListAsync();
         }
 
+        public async Task<(IEnumerable<T> Data, int Total)> GetFilteredPagedAsync<TOrderBy>(
+            Expression<Func<T, bool>> predicate,
+            Expression<Func<T, TOrderBy>> orderByDescending,
+            int pageNumber,
+            int pageSize,
+            CancellationToken cancellationToken = default)
+        {
+            pageNumber = pageNumber < 1 ? 1 : pageNumber;
+            pageSize = pageSize < 1 ? 10 : pageSize;
+
+            var query = _dbSet.AsNoTracking().Where(predicate);
+
+            var total = await query.CountAsync(cancellationToken);
+
+            var data = await query
+                .OrderByDescending(orderByDescending)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return (data, total);
+        }
+
         public async Task<T> GetRecentRecord<TOrderBy>(Expression<Func<T, bool>> expression, Expression<Func<T, TOrderBy>> orderBy)
         {
             var record = await _dbSet.AsNoTracking().Where(expression).OrderByDescending(orderBy).FirstOrDefaultAsync();
@@ -126,10 +154,7 @@ namespace SoftUmar_Virtuals.Infrastructure.Persistence.Repositories
             return record;
         }
 
-        public IQueryable<T> GetQueryable()
-        {
-            return _dbSet.AsQueryable();
-        }
+        
 
         public async Task AddAsync(T entity, CancellationToken cancellationToken)
         {

@@ -25,6 +25,8 @@ namespace SoftUmar_Virtuals.Domain.Entities
         public string Reason { get; set; } = default!;
         // Deposit, Buy Number, Refund
 
+        public string Status { get; set; } 
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public Wallets Wallet { get; set; }

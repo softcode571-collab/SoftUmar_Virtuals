@@ -7,6 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extentions\**" />
+    <Compile Remove="Filters\**" />
+    <Compile Remove="Hubs\**" />
+    <Content Remove="Extentions\**" />
+    <Content Remove="Filters\**" />
+    <Content Remove="Hubs\**" />
+    <EmbeddedResource Remove="Extentions\**" />
+    <EmbeddedResource Remove="Filters\**" />
+    <EmbeddedResource Remove="Hubs\**" />
+    <None Remove="Extentions\**" />
+    <None Remove="Filters\**" />
+    <None Remove="Hubs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="zq2lyc02.w0l~" />
   </ItemGroup>
 
@@ -28,12 +43,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.7" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.7" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Extentions\" />
-    <Folder Include="Filters\" />
-    <Folder Include="Hubs\" />
   </ItemGroup>
 
   <ItemGroup>

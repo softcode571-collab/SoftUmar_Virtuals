@@ -204,6 +204,10 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Bvn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -226,7 +230,17 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("EmailVerificationAttemptCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EmailVerificationToken")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailVerificationTokenExpiry")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("EmailVerified")
                         .HasColumnType("bit");
@@ -245,6 +259,9 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsSuspended")
@@ -273,9 +290,23 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Nin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PasswordResetAttemptCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PasswordResetToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PasswordResetTokenExpiry")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -285,7 +316,13 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -339,6 +376,19 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReservedAccountBank")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReservedAccountNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReservedAccountStatus")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("TotalCredit")
                         .HasColumnType("decimal(18,2)");
 
@@ -350,10 +400,6 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

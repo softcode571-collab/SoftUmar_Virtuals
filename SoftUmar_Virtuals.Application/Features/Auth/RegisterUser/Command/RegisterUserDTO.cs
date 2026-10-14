@@ -20,6 +20,10 @@ namespace SoftUmar_Virtuals.Application.Features.Auth.RegisterUser.Command
 
         public required string PhoneNumber { get; set; }
 
+        public string? Nin { get; set; }
+
+        public string Bvn { get; set; }
+
         public required string Country { get; set; }
 
         public required string ReferralCode { get; set; }

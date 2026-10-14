@@ -32,5 +32,9 @@ namespace SoftUmar_Virtuals.Domain.Entities
         public DateTime? UpdatedAt { get; set; }
 
         public User User { get; set; }
+        public long ProviderOrderId { get; set; }
+        public string Operator { get; set; }
+        public string Product { get; set; }
+        public DateTime? ExpiresAt { get; set; }
     }
 }

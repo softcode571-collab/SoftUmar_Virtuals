@@ -18,6 +18,7 @@ namespace SoftUmar_Virtuals.Application.Interfaces
         Task UpdateAsync(T entity);
         bool Exists(Expression<Func<T, bool>> expression);
         Task DeleteAsync(T entity);
+        IQueryable<T> GetQueryable();
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
         Task<bool> ExistsAsync(Guid id);
 
@@ -25,6 +26,7 @@ namespace SoftUmar_Virtuals.Application.Interfaces
         IQueryable<T> GetAndInclude(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includeProperties);
         Task<T> Insert(T entity);
         Task<T> GetSingleAsync(Expression<Func<T, bool>> expression);
+        Task<(IEnumerable<T> Data, int Total)> GetFilteredPagedAsync<TOrderBy>(Expression<Func<T, bool>> predicate, Expression<Func<T, TOrderBy>> orderByDescending, int pageNumber, int pageSize, CancellationToken cancellationToken = default);
         Task<(IEnumerable<T> Data, int Total)> GetPaginatedAsync(int page, int pageSize, params Expression<Func<T, object>>[] includes);
     }
 }
