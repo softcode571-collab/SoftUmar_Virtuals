@@ -22,6 +22,8 @@ namespace VirtualNumber.Infrastructure.Persistence.Repositories
         public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
 
         public DbSet<Refund> Refunds { get; set; }
+        
+        public DbSet<PlatformSettings> PlatformSetting { get; set; }
 
         public DbSet<AuditLogs> AuditLogs { get; set; }
 

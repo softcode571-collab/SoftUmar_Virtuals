@@ -4,13 +4,13 @@ using SoftUmar_Virtuals.Application.Interfaces;
 using SoftUmar_Virtuals.Domain.Entities;
 using SoftUmar_Virtuals.Infrastructure.Services.FiveSim;
 
-namespace SoftUmar_Virtuals.Infrastructure.Services.FiveSim.Activation.Query;
+namespace SoftUmar_Virtuals.Application.Features.FiveSim.Activation.Query;
 
 public record CheckActivationQuery(Guid UserId, Guid ActivationId) : IRequest<Result<ActivationStatusDTO>>;
 
 public class CheckActivationQueryHandler(
     IRepository<FiveSimOrder> orderRepo,
-    FiveSimClient fiveSimClient,
+    IFiveSimClient fiveSimClient,
     ILoggerService logger) : IRequestHandler<CheckActivationQuery, Result<ActivationStatusDTO>>
 {
     public async Task<Result<ActivationStatusDTO>> Handle(

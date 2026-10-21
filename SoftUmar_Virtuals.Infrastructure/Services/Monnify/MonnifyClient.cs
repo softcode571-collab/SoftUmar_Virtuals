@@ -65,7 +65,13 @@ namespace SoftUmar_Virtuals.Infrastructure.Services.Monnify
                 ["contractCode"] = _settings.ContractCode,
                 ["customerEmail"] = customerEmail,
                 ["customerName"] = customerName,
-                ["getAllAvailableBanks"] = false,
+                // CHANGED: was false, with no preferredBanks specified -
+                // Monnify rejects that combination ("Kindly specify
+                // preferred bank codes or set getAllAvailableBanks to true").
+                // true means the reserved account is created across all of
+                // Monnify's partner banks rather than one specific bank -
+                // simpler than managing a list of preferred bank codes.
+                ["getAllAvailableBanks"] = true,
             };
 
             if (!string.IsNullOrWhiteSpace(bvn)) payload["bvn"] = bvn;

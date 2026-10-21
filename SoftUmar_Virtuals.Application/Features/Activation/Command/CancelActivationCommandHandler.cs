@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SoftUmar_Virtuals.Infrastructure.Services.FiveSim.Activation.Command
+namespace SoftUmar_Virtuals.Application.Features.FiveSim.Activation.Command
 {
     public record CancelActivationCommand(Guid UserId, Guid ActivationId) : IRequest<Result>;
 
@@ -16,7 +16,7 @@ namespace SoftUmar_Virtuals.Infrastructure.Services.FiveSim.Activation.Command
         IRepository<FiveSimOrder> orderRepo,
         IRepository<Wallets> walletRepo,
         IRepository<WalletTransaction> transactionRepo,
-        FiveSimClient fiveSimClient,
+        IFiveSimClient fiveSimClient,
         ILoggerService logger) : IRequestHandler<CancelActivationCommand, Result>
     {
         public async Task<Result> Handle(CancelActivationCommand request, CancellationToken cancellationToken)

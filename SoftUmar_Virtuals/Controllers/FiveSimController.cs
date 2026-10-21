@@ -1,9 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SoftUmar_Virtuals.Application.Features.Activation.Command;
+using SoftUmar_Virtuals.Application.Features.Activation.Query;
+using SoftUmar_Virtuals.Application.Features.FiveSim.Activation.Command;
+using SoftUmar_Virtuals.Application.Features.FiveSim.Activation.Query;
 using SoftUmar_Virtuals.Application.Interfaces;
-using SoftUmar_Virtuals.Infrastructure.Services.FiveSim.Activation.Command;
-using SoftUmar_Virtuals.Infrastructure.Services.FiveSim.Activation.Query;
+
 
 namespace SoftUmar_Virtuals.API.Controllers
 {
@@ -20,6 +23,18 @@ namespace SoftUmar_Virtuals.API.Controllers
         public async Task<IActionResult> GetServices([FromQuery] string country, [FromQuery] string @operator = "any")
         {
             var result = await mediator.Send(new GetAvailableServicesQuery(country, @operator));
+
+            if (result.IsFailed)
+                return BadRequest(new { message = result.Errors.First().Message });
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("countries")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCountries()
+        {
+            var result = await mediator.Send(new GetCountriesQuery());
 
             if (result.IsFailed)
                 return BadRequest(new { message = result.Errors.First().Message });

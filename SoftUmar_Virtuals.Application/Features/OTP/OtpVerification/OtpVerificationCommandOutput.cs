@@ -1,4 +1,4 @@
-﻿namespace SoftUmar_Virtuals.Infrastructure.Services.OTP.OtpVerification;
+﻿namespace SoftUmar_Virtuals.Application.Features.OTP.OtpVerification;
 
 public class OtpVerificationCommandOutput
 {

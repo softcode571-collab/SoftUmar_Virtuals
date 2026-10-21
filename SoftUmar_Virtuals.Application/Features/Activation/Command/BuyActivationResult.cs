@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SoftUmar_Virtuals.Infrastructure.Services.FiveSim.Activation.Command;
+namespace SoftUmar_Virtuals.Application.Features.FiveSim.Activation.Command;
 
 public class BuyActivationResult
 {

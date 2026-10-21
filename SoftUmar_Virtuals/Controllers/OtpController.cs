@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SoftUmar_Virtuals.Application.Features.OTP.OtpVerification;
 using SoftUmar_Virtuals.Application.Interfaces;
-using SoftUmar_Virtuals.Infrastructure.Services.OTP.OtpReset;
-using SoftUmar_Virtuals.Infrastructure.Services.OTP.OtpVerification;
+
 
 namespace SoftUmar_Virtuals.Api.Controllers
 {
@@ -34,27 +33,27 @@ namespace SoftUmar_Virtuals.Api.Controllers
         }
 
         [HttpPost("otpVerification")]
-        public async Task<IActionResult> OtpVerification(OtpVerificationCommand command)
+        public async Task<IActionResult> OtpVerification(VerifyEmailCommand command)
         {
             var result = await _sender.Send(command);
             if (result.IsSuccess)
             {
-                return Ok(result.Value);
+                return Ok(result);
             }
             return BadRequest(result.Errors.Select(e => e.Message));
 
         }
 
-        [HttpPost("otpReset")]
-        public async Task<IActionResult> OtpReset(OtpResetCommand command)
-        {
-            var result = await _sender.Send(command);
-            if (result.IsSuccess)
-            {
-                return Ok(result.Value);
-            }
-            return BadRequest(result.Errors.Select(e => e.Message));
+        //[HttpPost("otpReset")]
+        //public async Task<IActionResult> OtpReset(OtpResetCommand command)
+        //{
+        //    var result = await _sender.Send(command);
+        //    if (result.IsSuccess)
+        //    {
+        //        return Ok(result.Value);
+        //    }
+        //    return BadRequest(result.Errors.Select(e => e.Message));
 
-        }
+        //}
     }
 }

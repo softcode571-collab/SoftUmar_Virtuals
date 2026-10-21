@@ -59,30 +59,57 @@ builder.Services
     .AddJwtBearer(options =>
     {
         options.RequireHttpsMetadata = true;
-
         options.SaveToken = true;
 
         options.TokenValidationParameters =
             new TokenValidationParameters
             {
                 ValidateIssuer = true,
-
                 ValidateAudience = true,
-
                 ValidateLifetime = true,
-
                 ValidateIssuerSigningKey = true,
 
                 ValidIssuer = jwtSettings!.Issuer,
-
                 ValidAudience = jwtSettings.Audience,
 
-                IssuerSigningKey =
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtSettings.Key)),
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(jwtSettings.Key)),
 
                 ClockSkew = TimeSpan.Zero
             };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                var logger = context.HttpContext
+                    .RequestServices
+                    .GetRequiredService<ILoggerFactory>()
+                    .CreateLogger("JwtAuthentication");
+
+                logger.LogError(
+                    context.Exception,
+                    "JWT authentication failed: {Message}",
+                    context.Exception.Message);
+
+                return Task.CompletedTask;
+            },
+
+            OnChallenge = context =>
+            {
+                var logger = context.HttpContext
+                    .RequestServices
+                    .GetRequiredService<ILoggerFactory>()
+                    .CreateLogger("JwtAuthentication");
+
+                logger.LogWarning(
+                    "JWT challenge: {Error}; {Description}",
+                    context.Error,
+                    context.ErrorDescription);
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 
@@ -204,12 +231,25 @@ builder.Services.AddSwaggerGen(options =>
             In = ParameterLocation.Header,
             Description = "Enter: Bearer {your token}"
         });
+
+    options.AddSecurityRequirement(document => new()
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
 });
 
 builder.Services.Configure<MonnifySettings>(builder.Configuration.GetSection("Monnify"));
+builder.Services.Configure<MonnifySettings>(
+    builder.Configuration.GetSection("Monnify"));
+
+builder.Services.AddHttpClient<MonnifyClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Monnify:BaseUrl"]!);
+});
+
 
 builder.Services.Configure<FiveSimSettings>(builder.Configuration.GetSection("FiveSim"));
-builder.Services.AddHttpClient<FiveSimClient>(client =>
+builder.Services.AddHttpClient<IFiveSimClient, FiveSimClient>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["FiveSim:BaseUrl"]!);
 });
@@ -217,7 +257,6 @@ builder.Services.AddHttpClient<FiveSimClient>(client =>
 // =========================
 // BUILD APP
 // =========================
-
 var app = builder.Build();
 
 

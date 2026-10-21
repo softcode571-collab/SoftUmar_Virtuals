@@ -74,12 +74,26 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Operator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Product")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ProviderOrderId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Service")
                         .IsRequired()
@@ -125,7 +139,6 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RefreshToken")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("RefreshTokenExpiryTime")
@@ -169,6 +182,26 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PaymentTransactions");
+                });
+
+            modelBuilder.Entity("SoftUmar_Virtuals.Domain.Entities.PlatformSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("MarkupPercentage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("UsdToNgnRate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PlatformSetting");
                 });
 
             modelBuilder.Entity("SoftUmar_Virtuals.Domain.Entities.Refund", b =>
@@ -236,7 +269,6 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("EmailVerificationToken")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EmailVerificationTokenExpiry")
@@ -302,7 +334,6 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PasswordResetToken")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PasswordResetTokenExpiry")
@@ -344,6 +375,10 @@ namespace SoftUmar_Virtuals.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

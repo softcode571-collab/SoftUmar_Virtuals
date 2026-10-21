@@ -29,7 +29,7 @@ namespace SoftUmar_Virtuals.Domain.Entities
 
         public bool IsEmailVerified { get; set; }
 
-        public string PasswordResetToken { get; set; }
+        public string? PasswordResetToken { get; set; }
 
         public DateTime PasswordResetTokenExpiry { get; set; }
 
@@ -37,7 +37,7 @@ namespace SoftUmar_Virtuals.Domain.Entities
 
         public UserStatus Status { get; set; }
 
-        public string EmailVerificationToken { get; set; }
+        public string? EmailVerificationToken { get; set; }
 
         public DateTime? EmailVerificationTokenExpiry { get; set; }
 

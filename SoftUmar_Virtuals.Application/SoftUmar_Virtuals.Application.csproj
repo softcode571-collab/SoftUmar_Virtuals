@@ -34,6 +34,10 @@
     <ProjectReference Include="..\SoftUmar_Virtuals.Domain\SoftUmar_Virtuals.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\OTP\OtpReset\" />
+  </ItemGroup>
+
 	
 	
 

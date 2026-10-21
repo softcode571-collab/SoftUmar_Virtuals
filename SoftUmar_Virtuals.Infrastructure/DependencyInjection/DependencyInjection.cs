@@ -9,6 +9,7 @@ using SoftUmar_Virtuals.Infrastructure.Services.EmailService;
 using SoftUmar_Virtuals.Infrastructure.Services.FiveSim;
 using SoftUmar_Virtuals.Infrastructure.Services.Logger;
 using SoftUmar_Virtuals.Infrastructure.Services.Logger.Slack;
+using SoftUmar_Virtuals.Infrastructure.Services.Monnify;
 using SoftUmar_Virtuals.Infrastructure.Services.OTP.TokenGenerator;
 using StackExchange.Redis;
 using VirtualNumber.Infrastructure.Persistence.Repositories;
@@ -40,7 +41,9 @@ namespace SoftUmar_Virtuals.Infrastructure.DependencyInjection
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Login>, Repository<Login>>();
-           
+            services.AddScoped<IRepository<FiveSimOrder>, Repository<FiveSimOrder>>();
+            services.AddScoped<IMonnifyReservedAccountService, MonnifyReservedAccountService>();
+
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IRepository<Wallets>, Repository<Wallets>>();
             services.AddScoped<IRepository<WalletTransaction>, Repository<WalletTransaction>>();
@@ -49,7 +52,9 @@ namespace SoftUmar_Virtuals.Infrastructure.DependencyInjection
             services.AddScoped<ISlackLogger, SlackLogger>();
             services.AddScoped<IOtpService, OtpService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
-            services.AddScoped<FiveSimClient>();
+            services.AddScoped<IRepository<PlatformSettings>, Repository<PlatformSettings>>();
+            services.AddScoped<IPricingService, PricingService>();
+            //services.AddScoped<IFiveSimClient, FiveSimClient>();
 
 
             return services;

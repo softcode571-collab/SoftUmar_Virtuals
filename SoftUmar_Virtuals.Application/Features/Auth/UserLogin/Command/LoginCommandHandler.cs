@@ -70,13 +70,13 @@ namespace SoftUmar_Virtuals.Application.Features.Auth.UserLogin.Command
                 // NEW: reject unverified accounts. Drop this if you want to allow
                 // pre-verification login with restricted access instead — but then
                 // gate wallet funding / activation purchase on EmailVerified elsewhere.
-                if (!user.EmailVerified)
-                {
-                    await logger.LogWarning($"Login blocked - unverified email {dto.Email}",
-                        nameof(LoginCommandHandler), traceId);
+                //if (!user.EmailVerified)
+                //{
+                //    await logger.LogWarning($"Login blocked - unverified email {dto.Email}",
+                //        nameof(LoginCommandHandler), traceId);
 
-                    return Result.Fail("Please verify your email before logging in.");
-                }
+                //    return Result.Fail("Please verify your email before logging in.");
+                //}
 
                 var accessToken = await jwtService.GenerateAccessToken(user);
                 var refreshToken = jwtService.GenerateRefreshToken();

@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-namespace SoftUmar_Virtuals.Infrastructure.Services.FiveSim.Activation.Query
+namespace SoftUmar_Virtuals.Application.Features.FiveSim.Activation.Query
+
+
 {
     public class ActivationStatusDTO
     {
