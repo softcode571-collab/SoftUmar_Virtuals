@@ -36,6 +36,11 @@ namespace SoftUmar_Virtuals.Application.Features.FiveSim.Activation.Command
                 return Result.Fail("This activation can no longer be canceled.");
             }
 
+            if (order.Category == "Hosting")
+            {
+                return Result.Fail("Hosting (rental) numbers cannot be canceled once purchased.");
+            }
+
             try
             {
                 var fiveSimResult = await fiveSimClient.CancelOrderAsync(order.ProviderOrderId, cancellationToken);

@@ -9,55 +9,88 @@ namespace SoftUmar_Virtuals.Application.Features.FiveSim.Activation.Query;
 public record CheckActivationQuery(Guid UserId, Guid ActivationId) : IRequest<Result<ActivationStatusDTO>>;
 
 public class CheckActivationQueryHandler(
-    IRepository<FiveSimOrder> orderRepo,
-    IFiveSimClient fiveSimClient,
-    ILoggerService logger) : IRequestHandler<CheckActivationQuery, Result<ActivationStatusDTO>>
+        IRepository<FiveSimOrder> orderRepo,
+        IFiveSimClient fiveSimClient,
+        ILoggerService logger) : IRequestHandler<CheckActivationQuery, Result<ActivationStatusDTO>>
 {
     public async Task<Result<ActivationStatusDTO>> Handle(
         CheckActivationQuery request, CancellationToken cancellationToken)
     {
         var traceId = Guid.NewGuid().ToString();
 
-        var order = await orderRepo.GetSingleAsync(
-            o => o.Id == request.ActivationId && o.UserId == request.UserId);
+        var order = await orderRepo.GetSingleAsync(o => o.Id == request.ActivationId && o.UserId == request.UserId);
 
         if (order == null)
             return Result.Fail("Activation not found.");
 
-        // Don't bother calling 5SIM again if we already know it's in a
-        // final state - saves an API call and avoids pointless polling
-        // of a completed/dead order.
-        var finalStates = new[] { "FINISHED", "CANCELED", "TIMEOUT", "BANNED" };
+        var finalStates = new[] { "FINISHED", "CANCELED", "CANCELLED", "TIMEOUT", "BANNED" };
         if (finalStates.Contains(order.Status) && !string.IsNullOrEmpty(order.SmsCode))
         {
             return Result.Ok(ToDto(order));
         }
 
+        if (!long.TryParse(order.ActivationId, out var providerOrderId))
+        {
+            await logger.LogError(
+                $"ActivationId '{order.ActivationId}' is not a valid number for order {order.Id}.",
+                nameof(CheckActivationQueryHandler), null, traceId);
+            return Result.Ok(ToDto(order));
+        }
+
         try
         {
-            var fiveSimResult = await fiveSimClient.CheckOrderAsync(order.ProviderOrderId, cancellationToken);
+            var fiveSimResult = await fiveSimClient.CheckOrderAsync(providerOrderId, cancellationToken);
 
             order.Status = fiveSimResult.Status ?? order.Status;
 
             var code = fiveSimResult.Sms?.FirstOrDefault()?.Code;
+            var isNewCode = !string.IsNullOrEmpty(code) && order.SmsCode != code;
+
             if (!string.IsNullOrEmpty(code))
             {
                 order.SmsCode = code;
 
-                // FUTURE (separate module, not built here): push a
-                // SignalR "OtpReceived" event here so the frontend gets
-                // it live instead of polling this endpoint repeatedly.
+                // FUTURE (separate module): push a SignalR "OtpReceived"
+                // event here.
             }
 
+            // NEW: automatically call Finish the first time a code
+            // arrives - not on every subsequent check of an
+            // already-finished order (isNewCode guards against calling
+            // Finish repeatedly). This improves your 5SIM account
+            // rating and frees the number up faster for other buyers,
+            // per their docs' rating guidance.
+            if (isNewCode && order.Status != "FINISHED")
+            {
+                try
+                {
+                    var finishResult = await fiveSimClient.FinishOrderAsync(providerOrderId, cancellationToken);
+                    order.Status = finishResult.Status ?? "FINISHED";
+
+                    await logger.LogInfo(
+                        $"Order {order.ActivationId} auto-finished after SMS received.",
+                        nameof(CheckActivationQueryHandler), traceId);
+                }
+                catch (FiveSimApiException ex)
+                {
+                    // Don't fail the whole check just because Finish
+                    // failed - the user still got their code, which is
+                    // what actually matters to them. Finish failing is
+                    // a minor issue (affects your rating, not the user's
+                    // experience) - log it and move on.
+                    await logger.LogWarning(
+                        $"Auto-finish failed for order {order.ActivationId}: {ex.Message}",
+                        nameof(CheckActivationQueryHandler), traceId);
+                }
+            }
+
+            order.UpdatedAt = DateTime.UtcNow;
             await orderRepo.SaveChanges(cancellationToken);
         }
         catch (FiveSimApiException ex)
         {
-            // Don't fail the whole request just because the live poll
-            // failed - return what we have locally instead, since the
-            // user still wants to see the last known status.
             await logger.LogWarning(
-                $"5SIM check failed for order {order.ProviderOrderId}: {ex.Message}",
+                $"5SIM check failed for order {order.ActivationId}: {ex.Message}",
                 nameof(CheckActivationQueryHandler), traceId);
         }
 

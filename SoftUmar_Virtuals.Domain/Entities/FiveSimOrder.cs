@@ -8,6 +8,8 @@ namespace SoftUmar_Virtuals.Domain.Entities
 {
     public class FiveSimOrder
     {
+        
+
         public Guid Id { get; set; }
 
         public Guid UserId { get; set; }
@@ -17,6 +19,8 @@ namespace SoftUmar_Virtuals.Domain.Entities
         public string PhoneNumber { get; set; } = default!;
 
         public string Country { get; set; } = default!;
+
+        public string? Category;
 
         public string Service { get; set; } = default!;
 
