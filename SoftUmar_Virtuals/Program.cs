@@ -9,6 +9,7 @@ using SoftUmar_Virtuals.API.Middleware;
 using SoftUmar_Virtuals.Application.DependencyInjection;
 using SoftUmar_Virtuals.Application.Interfaces;
 using SoftUmar_Virtuals.Infrastructure.DependencyInjection;
+using SoftUmar_Virtuals.Infrastructure.Realtime;
 using SoftUmar_Virtuals.Infrastructure.Security;
 using SoftUmar_Virtuals.Infrastructure.Services;
 using SoftUmar_Virtuals.Infrastructure.Services.FiveSim;
@@ -106,6 +107,22 @@ builder.Services
                     "JWT challenge: {Error}; {Description}",
                     context.Error,
                     context.ErrorDescription);
+
+                return Task.CompletedTask;
+            }
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                {
+                    context.Token = accessToken;
+                }
 
                 return Task.CompletedTask;
             }
@@ -281,6 +298,8 @@ app.UseHttpsRedirection();
 app.UseRateLimiter();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
+
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.UseCors("CorsPolicy");
 

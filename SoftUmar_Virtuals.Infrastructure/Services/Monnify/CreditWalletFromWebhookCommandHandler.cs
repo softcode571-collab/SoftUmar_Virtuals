@@ -11,10 +11,12 @@ namespace SoftUmar_Virtuals.Infrastructure.Services.Monnify
     public class CreditWalletFromWebhookCommandHandler(
         IRepository<Wallets> walletRepo,
         IRepository<WalletTransaction> transactionRepo, // ASSUMPTION: adjust field
-            // names below (WalletId, Type, Amount, Reference, Status,
-            // CreatedAt) to match your actual WalletTransaction entity - this
-            // is built from your requirements doc's table shape, not a file
-            // you've shown me.
+                                                        // names below (WalletId, Type, Amount, Reference, Status,
+                                                        // CreatedAt) to match your actual WalletTransaction entity - this
+                                                        // is built from your requirements doc's table shape, not a file
+                                                        // you've shown me.
+        
+        INotificationService notificationService,
         ILoggerService logger) : IRequestHandler<CreditWalletFromWebhookCommand, Result>
     {
         public async Task<Result> Handle(CreditWalletFromWebhookCommand request, CancellationToken cancellationToken)
@@ -94,6 +96,9 @@ namespace SoftUmar_Virtuals.Infrastructure.Services.Monnify
                 await walletRepo.SaveChanges(cancellationToken);
                 await transactionRepo.AddAsync(transaction, cancellationToken);
                 await transactionRepo.SaveChanges(cancellationToken);
+
+
+                await notificationService.NotifyWalletUpdatedAsync(wallet.UserId, wallet.Balance);
 
                 await logger.LogInfo(
                     $"Wallet {wallet.Id} credited {data.AmountPaid} from transaction {data.TransactionReference}. New balance: {wallet.Balance}",

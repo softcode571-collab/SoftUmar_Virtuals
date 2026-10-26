@@ -54,6 +54,7 @@ namespace SoftUmar_Virtuals.Infrastructure.DependencyInjection
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IRepository<PlatformSettings>, Repository<PlatformSettings>>();
             services.AddScoped<IPricingService, PricingService>();
+            services.AddScoped<INotificationService, NotificationService>();
             //services.AddScoped<IFiveSimClient, FiveSimClient>();
 
 
